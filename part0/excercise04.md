@@ -8,7 +8,7 @@ sequenceDiagram
     server-->>browser: 302 (Redirect)
     deactivate server
 
-    Note left of the server: The payload value is appended to the data.json on server.
+    Note left of server: The payload value is appended to the data.json on server.
     
     browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/main.css
     activate server
