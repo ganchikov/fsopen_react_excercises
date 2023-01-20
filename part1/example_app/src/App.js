@@ -1,25 +1,16 @@
-const Hello = (props) => {
-  console.log(props)
+const App = (props) => {
+  const { notes } = props
+
   return (
     <div>
-      <p>Hello {props.name}, you are {props.age} years old</p>
+      <h1>Notes</h1>
+      <ul>
+        <li>{notes[0].content}</li>
+        <li>{notes[1].content}</li>
+        <li>{notes[2].content}</li>
+      </ul>
     </div>
   )
-}
-
-
-const App = () => {
-  const now = new Date();
-  const name = 'Peter'
-  const age = 10
-  console.log('Hello from component')
-  return (
-  <>
-    <h1>Greetings</h1>
-    <Hello name='Maya' age={26+10}/>
-    <Hello name={name} age={age}/>
-  </>
-  )  
 }
 
 export default App;
