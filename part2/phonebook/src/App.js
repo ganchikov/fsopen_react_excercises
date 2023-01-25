@@ -1,18 +1,14 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import axios from 'axios'
 import Filter from './components/Filter'
 import PhoneBookEntryForm from './components/PhoneBookEntryForm'
 import PhoneBookEntryList from './components/PhoneBookEntryList'
 
 const App = () => {
   
-  const [persons, setPersons] = useState([
-    { name: 'Arto Hellas', number: '040-123456', id: 1 },
-    { name: 'Ada Lovelace', number: '39-44-5323523', id: 2 },
-    { name: 'Dan Abramov', number: '12-43-234345', id: 3 },
-    { name: 'Mary Poppendieck', number: '39-23-6423122', id: 4 }
-  ])
+  const [persons, setPersons] = useState([])
 
-  const [nextId, setNextId] = useState(5)
+  const [nextId, setNextId] = useState(1)
 
   const [filterString, setNewFilterString] = useState('')
   const [newName, setNewName] = useState('')
@@ -45,6 +41,15 @@ const App = () => {
     setPersons(persons.concat({id: nextId, name: newName, number: newNumber}))
     setNextId(nextId+1)
   }
+
+  useEffect(() => {
+    axios
+      .get('http://localhost:3001/persons')
+      .then(response => {
+        setPersons(response.data)
+        setNextId(response.data.length+1)
+      })
+  }, [])
 
   return (
     <div>
