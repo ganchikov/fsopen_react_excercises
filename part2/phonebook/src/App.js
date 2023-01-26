@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
+import PhoneBookService from './services/PhoneBookService'
 import Filter from './components/Filter'
 import PhoneBookEntryForm from './components/PhoneBookEntryForm'
 import PhoneBookEntryList from './components/PhoneBookEntryList'
@@ -38,17 +39,37 @@ const App = () => {
       alert(`${newName} is already added to phonebook`)
       return
     }
-    setPersons(persons.concat({id: nextId, name: newName, number: newNumber}))
-    setNextId(nextId+1)
+    PhoneBookService.createPhoneBookEntry({id: nextId, name: newName, number: newNumber}).then(data => {
+      setPersons(persons.concat(data))
+      setNextId(nextId+1)
+    })
+  }
+
+  const onDelete = ({data}) => {
+    if (window.confirm(`Delete entry ${data.name}?`)) {
+      PhoneBookService.deleteEntry(data.id).then(response => {
+        debugger
+        const reducedPersons = persons.reduce((reduced, item) => {
+          debugger
+          if (item.id !== response) 
+            return reduced.concat(item)
+            else return reduced
+        })
+
+        setPersons(reducedPersons)
+      }).catch(err => {
+        debugger
+        alert('No entry found!')
+      })
+    }
+
   }
 
   useEffect(() => {
-    axios
-      .get('http://localhost:3001/persons')
-      .then(response => {
-        setPersons(response.data)
-        setNextId(response.data.length+1)
-      })
+    PhoneBookService.getAll().then(data => {
+      setPersons(data)
+      setNextId(data.length+1)
+    })
   }, [])
 
   return (
@@ -58,7 +79,7 @@ const App = () => {
       <h2>add a new</h2>
       <PhoneBookEntryForm onNameChange={captureName} onNumberChange={captureNumber} onClick={addNewEntry}/>
       <h2>Numbers</h2>
-      <PhoneBookEntryList persons={persons} filterString={filterString}/>
+      <PhoneBookEntryList persons={persons} filterString={filterString} deleteEventHandler={onDelete}/>
     </div>
   );
 }
