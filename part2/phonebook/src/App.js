@@ -28,6 +28,12 @@ const App = () => {
     setNewFilterString(event.target.value)
   }
 
+  const getNextId = (data) => {
+    let maxId = 0;
+    data.forEach(item => item.id > maxId ? maxId = item.id : 0)
+    return maxId+1
+  }
+
   const findByName = (name) => {
     return persons.find(item => item.name.includes(name))
   }
@@ -36,26 +42,33 @@ const App = () => {
     event.preventDefault()
     const element = findByName(newName)
     if (element) {
-      alert(`${newName} is already added to phonebook`)
+      if (window.confirm(`${newName} is already added to the phonebook, replace the old number with a new one?`)){
+        PhoneBookService.updateEntry({id: element.id, name: element.name, number: newNumber}).then(data => {
+          const newPersonsSet = persons.map(item => {
+            if (item.id === element.id) item.number = newNumber
+            return item
+          })
+          setPersons(newPersonsSet)
+        })
+      }
       return
     }
     PhoneBookService.createPhoneBookEntry({id: nextId, name: newName, number: newNumber}).then(data => {
-      setPersons(persons.concat(data))
-      setNextId(nextId+1)
+      const newPersonsSet = persons.concat(data)
+      setPersons(newPersonsSet)
+      setNextId(getNextId(newPersonsSet))
     })
   }
 
   const onDelete = ({data}) => {
     if (window.confirm(`Delete entry ${data.name}?`)) {
       PhoneBookService.deleteEntry(data.id).then(response => {
-        debugger
-        const reducedPersons = persons.reduce((reduced, item) => {
-          debugger
-          if (item.id !== response) 
-            return reduced.concat(item)
-            else return reduced
+        const reducedPersons = []
+        persons.forEach(item => {
+          if (item.id !== data.id) {
+            reducedPersons.push(item)
+          }
         })
-
         setPersons(reducedPersons)
       }).catch(err => {
         debugger
@@ -68,7 +81,7 @@ const App = () => {
   useEffect(() => {
     PhoneBookService.getAll().then(data => {
       setPersons(data)
-      setNextId(data.length+1)
+      setNextId(getNextId(data))
     })
   }, [])
 

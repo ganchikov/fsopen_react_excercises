@@ -14,4 +14,9 @@ const deleteEntry = (id) => {
     return axios.delete(url).then(response => response.data.id = id)
 }
 
-export default {getAll, createPhoneBookEntry, deleteEntry}
+
+const updateEntry = (entry) => {
+    const url = `${baseUrl}/${entry.id}`
+    return axios.put(url, entry).then(response => response.data)
+}
+export default {getAll, createPhoneBookEntry, deleteEntry, updateEntry}
