@@ -52,7 +52,7 @@ const App = () => {
     setTimeout(()=> {
       setErrorMessage(null)
     }, 3000)
-} 
+  } 
 
   const addNewEntry = (event) => {
     event.preventDefault()
