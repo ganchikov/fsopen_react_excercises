@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios'
 import PhoneBookService from './services/PhoneBookService'
 import Filter from './components/Filter'
 import PhoneBookEntryForm from './components/PhoneBookEntryForm'
 import PhoneBookEntryList from './components/PhoneBookEntryList'
+import NotificationMessage from './components/NotificationMessage'
 
 const App = () => {
   
@@ -14,6 +14,8 @@ const App = () => {
   const [filterString, setNewFilterString] = useState('')
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
+  const [notificationMessage, setNotificationMessage] = useState('')
+  const [errorMessage, setErrorMessage] = useState('')
 
 
   const captureName = (event) => {
@@ -38,6 +40,20 @@ const App = () => {
     return persons.find(item => item.name.includes(name))
   }
 
+  const showNotification = (message) => {
+      setNotificationMessage(message)
+      setTimeout(()=> {
+        setNotificationMessage(null)
+      }, 3000)
+  }
+
+  const showError = (message) => {
+    setErrorMessage(message)
+    setTimeout(()=> {
+      setErrorMessage(null)
+    }, 3000)
+} 
+
   const addNewEntry = (event) => {
     event.preventDefault()
     const element = findByName(newName)
@@ -49,6 +65,9 @@ const App = () => {
             return item
           })
           setPersons(newPersonsSet)
+          showNotification(`Entry ${element.name} was updated`)
+        }).catch(err => {
+          showError(`Entry ${newName} is not existing!`)
         })
       }
       return
@@ -57,6 +76,7 @@ const App = () => {
       const newPersonsSet = persons.concat(data)
       setPersons(newPersonsSet)
       setNextId(getNextId(newPersonsSet))
+      showNotification(`Entry ${newName} was created`)
     })
   }
 
@@ -71,8 +91,7 @@ const App = () => {
         })
         setPersons(reducedPersons)
       }).catch(err => {
-        debugger
-        alert('No entry found!')
+        showError(`Entry ${data.name} is not existing!`)
       })
     }
 
@@ -88,6 +107,8 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <NotificationMessage message={notificationMessage} />
+      <NotificationMessage message={errorMessage} iserror={true}/>
       <Filter onChange={captureFilterString}/>
       <h2>add a new</h2>
       <PhoneBookEntryForm onNameChange={captureName} onNumberChange={captureNumber} onClick={addNewEntry}/>
