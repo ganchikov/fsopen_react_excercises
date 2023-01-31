@@ -1,4 +1,5 @@
 import CountryShortEntry from "./CountryShortEntry"
+import CountryDetailEntry from "./CountryDetailEntry";
 
 const CountriesList = ({countryData, countryName}) => {
     const filteredData = []
@@ -7,7 +8,13 @@ const CountriesList = ({countryData, countryName}) => {
     });
     
     console.log(filteredData)
+    // debugger
     if (filteredData.length > 10) return 'Too many entries'
+    if (filteredData.length === 1) return (
+        <>  
+            <CountryDetailEntry country={filteredData[0]}/>
+        </>
+    )
     return (
         <>
             {
