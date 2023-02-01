@@ -1,14 +1,13 @@
 import CountryShortEntry from "./CountryShortEntry"
 import CountryDetailEntry from "./CountryDetailEntry";
+import WeatherDetails from "./WeatherDetails";
 
-const CountriesList = ({countryData, countryName}) => {
+const CountriesList = ({countryData, countryName, weatherData, selectedCountry, onCountryDetailsButtonClick}) => {
     const filteredData = []
     countryData.forEach(element => {
         if (element.name.common.includes(countryName)) filteredData.push(element)    
     });
     
-    console.log(filteredData)
-    // debugger
     if (filteredData.length > 10) return 'Too many entries'
     if (filteredData.length === 1) return (
         <>  
@@ -19,8 +18,18 @@ const CountriesList = ({countryData, countryName}) => {
         <>
             {
                 filteredData.map(country => {
+                    if (country === selectedCountry && weatherData) {
+                        return (
+                            <>
+                                <CountryDetailEntry country={selectedCountry}></CountryDetailEntry>
+                                <WeatherDetails country={selectedCountry} weatherData={weatherData}></WeatherDetails>
+                            </>
+                        )
+                    } else if (country === selectedCountry) {
+                        return <CountryDetailEntry country={selectedCountry}></CountryDetailEntry>
+                    }
                     return (
-                        <CountryShortEntry data={country}/>
+                        <CountryShortEntry data={country} onCountryDetailsButtonClick={onCountryDetailsButtonClick}/>
                     )
                 })
             }
