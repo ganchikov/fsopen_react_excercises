@@ -4,9 +4,9 @@ const CountryShortEntry = ({data, onCountryDetailsButtonClick}) => {
     }
 
     return (
-        <li>
+        <>
             {data.name.common}<button onClick={onButtonClick}>details</button>
-        </li>
+        </>
     )
 }
 

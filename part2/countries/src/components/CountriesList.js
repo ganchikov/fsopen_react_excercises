@@ -11,25 +11,32 @@ const CountriesList = ({countryData, countryName, weatherData, selectedCountry, 
     if (filteredData.length > 10) return 'Too many entries'
     if (filteredData.length === 1) return (
         <>  
-            <CountryDetailEntry country={filteredData[0]}/>
+            <CountryDetailEntry country={filteredData[0]} weatherData={weatherData}/>
         </>
     )
     return (
         <>
             {
-                filteredData.map(country => {
+                filteredData.map((country, index) => {
                     if (country === selectedCountry && weatherData) {
                         return (
                             <>
-                                <CountryDetailEntry country={selectedCountry}></CountryDetailEntry>
-                                <WeatherDetails country={selectedCountry} weatherData={weatherData}></WeatherDetails>
+                                <CountryDetailEntry key={`country_${index}`} 
+                                                    country={selectedCountry} 
+                                                    countryIndex={index}
+                                                    weatherData={weatherData}/>                                  
                             </>
                         )
                     } else if (country === selectedCountry) {
-                        return <CountryDetailEntry country={selectedCountry}></CountryDetailEntry>
+                        return <CountryDetailEntry  key={`country_${index}`} 
+                                                    country={selectedCountry} 
+                                                    weatherData={weatherData}/>
                     }
                     return (
-                        <CountryShortEntry data={country} onCountryDetailsButtonClick={onCountryDetailsButtonClick}/>
+                        <li key={index}>
+                            <CountryShortEntry data={country} onCountryDetailsButtonClick={onCountryDetailsButtonClick}
+                            />
+                        </li>
                     )
                 })
             }

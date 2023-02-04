@@ -1,4 +1,7 @@
-const CountryDetailEntry = ({country}) => {
+import WeatherDetails from "./WeatherDetails"
+import LanguageEntry from "./LanguageEntry"
+
+const CountryDetailEntry = ({country, countryIndex, weatherData}) => {
 return (
         <>
             <h3>{country.name.common}</h3>
@@ -8,16 +11,17 @@ return (
             <br/>
             <h4>Languages</h4>
             {
-                Object.entries(country.languages).map(entry => {
+                Object.entries(country.languages).map((entry, index) => {
                     return (
-                        <li>
-                            {entry[1]}
+                        <li key={`country_${countryIndex}_lang_${index}`}>
+                            <LanguageEntry language={entry[1]}/>                            
                         </li>
                     )
                 })
             }
             <br/>
             <img src={country.flags.png}></img>
+            <WeatherDetails country={country} weatherData={weatherData}/>
         </>
     )
 }
